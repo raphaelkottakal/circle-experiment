@@ -47,6 +47,7 @@ gui.add(guiValues, 'clear');
 // camera
 camControls.enableDamping = true;
 camControls.enablePan = false;
+camControls.rotateSpeed = 0.5;
 camControls.enabled = false;
 camControls.autoRotate = true;
 camControls.autoRotateSpeed = -0.5;
