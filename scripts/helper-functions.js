@@ -52,3 +52,14 @@ function makeSpherePoint(pX, pY, pZ, r) {
   const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(r);
   return new Cube({ color: 'hsl(' + pY + ', 100%, 50%)', position: vector });
 }
+
+
+function clearPoints(points) {
+  for (let i = 0; i < points.length; i++) {
+    let point = points[i];
+    scene.remove(point);
+    point.geometry.dispose();
+    point.material.dispose();
+    point = undefined;
+  }
+}

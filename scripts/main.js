@@ -15,7 +15,7 @@ const cube = new Cube({ color: 0x00ff00 });
 //   count: 6,
 //   radius: 64
 // });
-const points = [];
+let points = [];
 let movePhaseX = 0;
 let movePhaseY = 0;
 let movePhaseZ = 0;
@@ -28,21 +28,25 @@ setInterval(function() {
   point.lookAt(scene.position);
   points.push(point);
   scene.add(point);
-  movePhaseX += 1.1 * Math.PI / 180 * 10;
-  movePhaseY += 1.11 * Math.PI / 180 * 10;
-  movePhaseZ += 1.12 * Math.PI / 180 * 10;
+  movePhaseX += guiValues.xAdd;
+  movePhaseY += guiValues.yAdd;
+  movePhaseZ += guiValues.zAdd;
   // movePhaseX += Math.PI * 0.1;
   // movePhaseY += Math.PI * 0.11;
   // movePhaseZ += Math.PI * 0.111;
   // console.log(points.length);
-}, 1);
+}, 10);
 
 // config
 stats.showPanel(0);
-gui.close();
+// gui.close();
+gui.add(guiValues, 'xAdd', 0, 1);
+gui.add(guiValues, 'yAdd', 0, 1);
+gui.add(guiValues, 'zAdd', 0, 1);
 gui.add(guiValues, 'addHelpers');
+gui.add(guiValues, 'clear');
 gui.add(guiValues, 'orbitCam');
-gui.addColor(guiValues, 'color');
+// gui.addColor(guiValues, 'color');
 // camera
 camControls.enableDamping = true;
 camControls.enablePan = false;
@@ -99,9 +103,19 @@ function setFromGui() {
 }
 
 function makeGuiValues() {
+  this.xAdd = 0.11;
+  this.yAdd = 0.23;
+  this.zAdd = 0.12;
   this.color = [ 0, 255, 0 ];
-  this.orbitCam = true;
+  this.orbitCam = false;
   this.addHelpers = addHelpers;
+  this.clear = function() {
+    clearPoints(points);
+    movePhaseX = 0;
+    movePhaseY = 0;
+    movePhaseZ = 0;
+    points = [];
+  }
 };
 
 function addHelpers() {
