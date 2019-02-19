@@ -45,12 +45,12 @@ function makeRandomSpherePoint(r) {
 }
 
 function makeSpherePoint(pX, pY, pZ, r) {
-
+  const colorHue = Math.round(points.length / guiValues.maxPoints * 360);
   const x = Math.cos(pX);//Math.random() * 2 - 1;
   const y = Math.sin(pY);//Math.random() * 2 - 1;
   const z = Math.sin(pZ);//Math.random() * 2 - 1;;
   const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(r);
-  return new Cube({ color: 'hsl(' + pY + ', 100%, 50%)', position: vector });
+  return new Cube({ color: 'hsl(' + colorHue + ', 100%, 50%)', position: vector });
 }
 
 
