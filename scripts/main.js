@@ -16,18 +16,26 @@ const cube = new Cube({ color: 0x00ff00 });
 //   radius: 64
 // });
 const points = [];
+let movePhaseX = 0;
+let movePhaseY = 0;
+let movePhaseZ = 0;
 setInterval(function() {
-  const x = Math.random() * 2 - 1;
-  const y = Math.random() * 2 - 1;
-  const z = Math.random() * 2 - 1;;
-  const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(32);
-  const point = new Cube({ color: 0xff0000, position: vector });
+  if (points.length > 2500) {
+    return
+  }
+  // const point = makeRandomSpherePoint(32);
+  const point = makeSpherePoint(movePhaseX, movePhaseY, movePhaseZ, 32);
   point.lookAt(scene.position);
   points.push(point);
   scene.add(point);
-  // console.log(point.position, Math.round(vector.length()));
-
-}, 10);
+  movePhaseX += 1.1 * Math.PI / 180 * 10;
+  movePhaseY += 1.11 * Math.PI / 180 * 10;
+  movePhaseZ += 1.12 * Math.PI / 180 * 10;
+  // movePhaseX += Math.PI * 0.1;
+  // movePhaseY += Math.PI * 0.11;
+  // movePhaseZ += Math.PI * 0.111;
+  // console.log(points.length);
+}, 1);
 
 // config
 stats.showPanel(0);
@@ -37,8 +45,9 @@ gui.add(guiValues, 'orbitCam');
 gui.addColor(guiValues, 'color');
 // camera
 camControls.enableDamping = true;
+camControls.enablePan = false;
 camControls.enabled = false;
-camera.position.z = 128;
+camera.position.z = 64;
 // light
 light.position.x = 16;
 light.position.y = 16;

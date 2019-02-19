@@ -1,3 +1,4 @@
+// circle
 function makePoints(opts) {
   const points = [];
   const count = opts.count ? opts.count : 8;
@@ -32,4 +33,22 @@ function rotatePoints(points) {
     points[i].rotation.x += 0.01 * i / points.length;
     points[i].rotation.y += 0.01;
   }
+}
+
+// sphere
+function makeRandomSpherePoint(r) {
+  const x = Math.random() * 2 - 1;
+  const y = Math.random() * 2 - 1;
+  const z = Math.random() * 2 - 1;;
+  const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(r);
+  return new Cube({ color: 'hsl(' + Math.random() * 360 + ', 100%, 50%)', position: vector });
+}
+
+function makeSpherePoint(pX, pY, pZ, r) {
+
+  const x = Math.cos(pX);//Math.random() * 2 - 1;
+  const y = Math.sin(pY);//Math.random() * 2 - 1;
+  const z = Math.sin(pZ);//Math.random() * 2 - 1;;
+  const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(r);
+  return new Cube({ color: 'hsl(' + pY + ', 100%, 50%)', position: vector });
 }
