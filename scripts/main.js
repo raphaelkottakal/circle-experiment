@@ -24,7 +24,7 @@ setInterval(function() {
     return
   }
   const point = makeSpherePoint(movePhaseX, movePhaseY, movePhaseZ, 32);
-  point.lookAt(scene.position);
+  // point.lookAt(scene.position);
   points.push(point);
   scene.add(point);
   movePhaseX += guiValues.xAdd;
