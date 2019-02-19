@@ -1,7 +1,9 @@
 function Cube(opts) {
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshPhongMaterial({
-    color: opts.color ? opts.color : 0xffffff
+    color: opts.color ? opts.color : 0xffffff,
+    opacity: 0.75,
+    transparent: true
   });
   const cube = new THREE.Mesh(geometry, material);
   // cube.position = opts.position ? opts.position : new THREE.Vector3(0, 0, 0);

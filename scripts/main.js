@@ -4,18 +4,33 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer();
 const gui = new dat.GUI();
 const guiValues = new makeGuiValues();
+stats = new Stats();
 
 // create elements
 const camControls = new THREE.OrbitControls( camera );
 const ambientLight = new THREE.AmbientLight( 0x404040 );
 const light = new THREE.DirectionalLight(0xffffff, 0.75);
 const cube = new Cube({ color: 0x00ff00 });
-const points = makePoints({
-  count: 160,
-  radius: 64
-});
+// const points = makePoints({
+//   count: 6,
+//   radius: 64
+// });
+const points = [];
+setInterval(function() {
+  const x = Math.random() * 2 - 1;
+  const y = Math.random() * 2 - 1;
+  const z = Math.random() * 2 - 1;;
+  const vector = new THREE.Vector3(x, y, z).normalize().multiplyScalar(32);
+  const point = new Cube({ color: 0xff0000, position: vector });
+  point.lookAt(scene.position);
+  points.push(point);
+  scene.add(point);
+  // console.log(point.position, Math.round(vector.length()));
+
+}, 10);
 
 // config
+stats.showPanel(0);
 gui.close();
 gui.add(guiValues, 'addHelpers');
 gui.add(guiValues, 'orbitCam');
@@ -38,22 +53,27 @@ scene.add(ambientLight);
 addPointsToScene(points);
 
 // add meshes to scene
-scene.add(cube);
+// scene.add(cube);
 
 // animation
 function animate() {
+  stats.begin();
   requestAnimationFrame(animate);
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
-  rotatePoints(points);
+  // makeCirclePoints(500);
+  // rotatePoints(points);
+  // console.log(points);
   setFromGui();
   camControls.update();
+  stats.end();
 	renderer.render(scene, camera);
 }
 
 animate();
 
 // add renderer to dom
+document.body.appendChild( stats.dom );
 document.body.appendChild(renderer.domElement);
 window.onresize = onResize;
 
