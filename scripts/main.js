@@ -4,26 +4,54 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer();
 const gui = new dat.GUI();
 const guiValues = new makeGuiValues();
+const stats = new Stats();
 
 // create elements
 const camControls = new THREE.OrbitControls( camera );
-const ambientLight = new THREE.AmbientLight( 0x404040 );
-const light = new THREE.DirectionalLight(0xffffff, 0.75);
+const ambientLight = new THREE.AmbientLight( 0xffffff, 0.4 );
+const light = new THREE.DirectionalLight(0xffffff, 0.6);
 const cube = new Cube({ color: 0x00ff00 });
-const points = makePoints({
-  count: 160,
-  radius: 64
-});
+// const points = makePoints({
+//   count: 6,
+//   radius: 64
+// });
+let points = [];
+let movePhaseX = 0;
+let movePhaseY = 0;
+let movePhaseZ = 0;
+setInterval(function() {
+  if (points.length >= guiValues.maxPoints) {
+    return
+  }
+  const point = makeSpherePoint(movePhaseX, movePhaseY, movePhaseZ, 32);
+  // point.lookAt(scene.position);
+  points.push(point);
+  scene.add(point);
+  movePhaseX += guiValues.xAdd;
+  movePhaseY += guiValues.yAdd;
+  movePhaseZ += guiValues.zAdd;
+}, 1);
 
 // config
+stats.showPanel(0);
 gui.close();
-gui.add(guiValues, 'addHelpers');
+gui.add(guiValues, 'maxPoints', 100, 2000).step(1);
+gui.add(guiValues, 'xAdd', 0, 1);
+gui.add(guiValues, 'yAdd', 0, 1);
+gui.add(guiValues, 'zAdd', 0, 1);
+// gui.add(guiValues, 'addHelpers');
 gui.add(guiValues, 'orbitCam');
-gui.addColor(guiValues, 'color');
+gui.add(guiValues, 'autoRotate');
+gui.add(guiValues, 'clear');
+// gui.addColor(guiValues, 'color');
 // camera
 camControls.enableDamping = true;
+camControls.enablePan = false;
+camControls.rotateSpeed = 0.5;
 camControls.enabled = false;
-camera.position.z = 128;
+camControls.autoRotate = true;
+camControls.autoRotateSpeed = -0.5;
+camera.position.z = 64;
 // light
 light.position.x = 16;
 light.position.y = 16;
@@ -38,22 +66,27 @@ scene.add(ambientLight);
 addPointsToScene(points);
 
 // add meshes to scene
-scene.add(cube);
+// scene.add(cube);
 
 // animation
 function animate() {
+  stats.begin();
   requestAnimationFrame(animate);
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
-  rotatePoints(points);
+  // makeCirclePoints(500);
+  // rotatePoints(points);
+  // console.log(points);
   setFromGui();
   camControls.update();
+  stats.end();
 	renderer.render(scene, camera);
 }
 
 animate();
 
 // add renderer to dom
+document.body.appendChild( stats.dom );
 document.body.appendChild(renderer.domElement);
 window.onresize = onResize;
 
@@ -67,12 +100,27 @@ function setFromGui() {
   if (camControls.enabled !== guiValues.orbitCam) {
     camControls.enabled = guiValues.orbitCam;
   }
+  if (camControls.autoRotate !== guiValues.autoRotate) {
+    camControls.autoRotate = guiValues.autoRotate;
+  }
 }
 
 function makeGuiValues() {
+  this.maxPoints = 1250;
+  this.xAdd = 0.11;
+  this.yAdd = 0.23;
+  this.zAdd = 0.12;
   this.color = [ 0, 255, 0 ];
   this.orbitCam = true;
+  this.autoRotate = true;
   this.addHelpers = addHelpers;
+  this.clear = function() {
+    clearPoints(points);
+    movePhaseX = 0;
+    movePhaseY = 0;
+    movePhaseZ = 0;
+    points = [];
+  }
 };
 
 function addHelpers() {
